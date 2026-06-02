@@ -79,6 +79,9 @@ src/
 pip install -r requirements.txt
 ```
 
+  This includes [`rsl_rl`](https://github.com/leggedrobotics/rsl_rl) (PyPI:
+  `rsl-rl-lib`), which provides the PPO `OnPolicyRunner` baseline.
+
 All training/evaluation scripts must be run with the Python interpreter from
 your Isaac Lab environment, since they launch Isaac Sim on startup.
 

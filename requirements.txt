@@ -21,5 +21,5 @@ imageio-ffmpeg
 # Only needed for scripts/deploy_mujoco.py (sim-to-sim in MuJoCo)
 mujoco>=3.0
 
-# PPO baseline (rsl_rl). A local copy may already be vendored under ./rsl_rl
+# PPO baseline (rsl_rl OnPolicyRunner)
 rsl-rl-lib

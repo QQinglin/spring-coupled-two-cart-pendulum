@@ -1,6 +1,9 @@
 # Log files
 logs/
 
+# Third-party RL library (install via pip: rsl-rl-lib)
+rsl_rl/
+
 # macOS
 .DS_Store
 
