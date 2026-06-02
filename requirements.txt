@@ -1,0 +1,25 @@
+# Python dependencies for the two-cart-pole project.
+#
+# NOTE: Isaac Sim / Isaac Lab are NOT installed via pip here. Install them by
+# following the official guide first, and run the scripts with the Python
+# interpreter from your Isaac Lab environment:
+#   https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html
+#
+# `rsl_rl` (PyPI package name: rsl-rl-lib) provides the PPO OnPolicyRunner.
+
+torch
+numpy
+gymnasium
+tensordict
+wandb
+termcolor
+omegaconf
+pandas
+imageio
+imageio-ffmpeg
+
+# Only needed for scripts/deploy_mujoco.py (sim-to-sim in MuJoCo)
+mujoco>=3.0
+
+# PPO baseline (rsl_rl). A local copy may already be vendored under ./rsl_rl
+rsl-rl-lib

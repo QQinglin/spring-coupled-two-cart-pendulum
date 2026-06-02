@@ -1,10 +1,25 @@
-# Two-Carts-Pole: TD-MPC & PPO in Isaac Lab
+# Learning Dynamics for Control: Model-Based Reinforcement Learning of a Spring-Coupled Two-Cart Inverted Pendulum
 
-A reinforcement-learning project for a custom **spring-coupled double-cart pole**
-task, built on [NVIDIA Isaac Lab](https://isaac-sim.github.io/IsaacLab/). It
+Official code for the paper
+**"Learning Dynamics for Control: Model-Based Reinforcement Learning of a
+Spring-Coupled Two-Cart Inverted Pendulum"**
+(Qinglin Yang, *Preprints.org*, 2026).
+[![DOI](https://img.shields.io/badge/DOI-10.20944%2Fpreprints202603.1250.v1-blue)](https://doi.org/10.20944/preprints202603.1250.v1)
+
+A reinforcement-learning project for a custom **spring-coupled two-cart inverted
+pendulum**, built on [NVIDIA Isaac Lab](https://isaac-sim.github.io/IsaacLab/). It
 includes a from-scratch **TD-MPC** implementation, a **PPO** baseline via
 [`rsl_rl`](https://github.com/leggedrobotics/rsl_rl), and a **MuJoCo sim-to-sim**
 deployment script for validating trained TD-MPC policies.
+
+If you use this code, please [cite the paper](#citation).
+
+![Method overview](docs/overview.png)
+
+*Planning-centric model-based RL (TOLD + TD-MPC) on a spring-coupled two-cart
+inverted pendulum: an actuated cart drives a passive, spring-coupled cart that
+carries the pendulum. Compared with a PPO baseline, the TD-MPC agent converges
+faster in wall-clock time and balances more stably.*
 
 ## The task
 
@@ -57,18 +72,21 @@ src/
 
 - **Isaac Sim + Isaac Lab** (provides `isaaclab`, `omni.*`). Follow the
   [official Isaac Lab installation guide](https://isaac-sim.github.io/IsaacLab/main/source/setup/installation/index.html).
-- **`rsl_rl`** (for the PPO baseline).
-- Python packages: `torch`, `numpy`, `wandb`, `termcolor`, `omegaconf`,
-  `pandas`, `imageio`, `tensordict`, `gymnasium`.
-- **MuJoCo** (`mujoco>=3.x`) — only needed for `deploy_mujoco.py`.
+  These are **not** installed via pip.
+- Remaining Python dependencies are listed in [`requirements.txt`](requirements.txt):
+
+```bash
+pip install -r requirements.txt
+```
 
 All training/evaluation scripts must be run with the Python interpreter from
 your Isaac Lab environment, since they launch Isaac Sim on startup.
 
-> **Note on hardcoded paths.** Several scripts and configs currently use
-> absolute paths (e.g. `/home/ubuntu22/tdmpc/...` for log directories and asset
-> files, and `src/assets/...` USD/MJCF paths). Update these to match your own
-> environment before running.
+> **Paths.** Log directories default to `<repo>/logs` (override with `--log_dir`),
+> and the MuJoCo model defaults to `src/assets/carts2pole.xml` (override with
+> `--xml`). The Isaac Lab USD asset defaults to `src/assets/newcartspole.usd`;
+> place your USD there or point to it with the `CARTSPOLE_USD` environment
+> variable. Make sure the corresponding asset files exist before running.
 
 ## Usage
 
@@ -103,11 +121,11 @@ python src/scripts/play.py --checkpoint /path/to/model.pt --num_envs 1 --video -
 
 ### Sim-to-sim in MuJoCo
 
-Validate a trained TD-MPC policy on the equivalent MuJoCo (MJCF) model. Edit
-`XML_PATH` and `CKPT_PATH` at the top of the script first:
+Validate a trained TD-MPC policy on the equivalent MuJoCo (MJCF) model:
 
 ```bash
-python src/scripts/deploy_mujoco.py
+python src/scripts/deploy_mujoco.py --checkpoint /path/to/checkpoint.pt
+# optionally override the MJCF model with --xml /path/to/model.xml
 ```
 
 ## Logging
@@ -115,4 +133,21 @@ python src/scripts/deploy_mujoco.py
 Training metrics are logged to the console and to [Weights & Biases](https://wandb.ai/).
 Set `use_wandb` / project names in the config classes under `src/configs/`, or
 disable W&B if you do not need it.
+
+## Citation
+
+If you find this work useful, please cite:
+
+```bibtex
+@article{yang2026learning,
+  title   = {Learning Dynamics for Control: Model-Based Reinforcement Learning of a Spring-Coupled Two-Cart Inverted Pendulum},
+  author  = {Yang, Qinglin},
+  journal = {Preprints.org},
+  year    = {2026},
+  doi     = {10.20944/preprints202603.1250.v1}
+}
 ```
+
+## License
+
+Released under the [MIT License](LICENSE).

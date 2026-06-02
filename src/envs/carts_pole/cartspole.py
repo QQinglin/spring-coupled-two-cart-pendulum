@@ -5,15 +5,23 @@ Isaac Lab simulation, including asset loading, initial state, and joint
 actuator parameters.
 """
 
+import os
+from pathlib import Path
+
 import isaaclab.sim as sim_utils
 from isaaclab.actuators import ImplicitActuatorCfg
 from isaaclab.assets import ArticulationCfg
+
+# USD asset path. Defaults to the bundled asset under src/assets/; override with
+# the CARTSPOLE_USD environment variable if your asset lives elsewhere.
+_ASSETS_DIR = Path(__file__).resolve().parents[2] / "assets"
+USD_PATH = os.environ.get("CARTSPOLE_USD", str(_ASSETS_DIR / "newcartspole.usd"))
 
 # CartPole robot configuration object
 CARTPOLE_CFG = ArticulationCfg(
     # Load the model from a USD file and set its physics properties
     spawn=sim_utils.UsdFileCfg(
-        usd_path="/home/ubuntu22/tdmpc/src/assets/newcartspole.usd",
+        usd_path=USD_PATH,
         rigid_props=sim_utils.RigidBodyPropertiesCfg(
             rigid_body_enabled=True,
             max_linear_velocity=1000.0,

@@ -9,8 +9,9 @@ import argparse
 import sys
 from pathlib import Path
 
-# Make the project source root (src/) importable when running this script directly
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+# Project root (repository top level) and the source root (src/)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from isaaclab.app import AppLauncher
 
@@ -23,6 +24,9 @@ parser.add_argument("--checkpoint", type=str, required=True, help="Path to .pt c
 parser.add_argument("--episodes", type=int, default=10, help="Number of evaluation episodes")
 parser.add_argument("--save_video", action="store_true", help="Save evaluation video (first episode)")
 parser.add_argument("--num_envs", type=int, default=1, help="(Optional) number of envs")
+parser.add_argument(
+    "--log_dir", type=str, default=str(PROJECT_ROOT / "logs"), help="Root directory for logs/videos."
+)
 AppLauncher.add_app_launcher_args(parser)
 args, hydra_args = parser.parse_known_args()
 # Strip parsed args from sys.argv (kept for consistency with train.py; Hydra is not used here)
@@ -65,7 +69,7 @@ def evaluate():
     algo_cfg.device = device
     algo_cfg.save_video = args.save_video
     # Output root (same layout as training)
-    work_dir = Path("/home/ubuntu22/tdmpc/logs") / algo_cfg.exp_name / str(algo_cfg.seed)
+    work_dir = Path(args.log_dir) / algo_cfg.exp_name / str(algo_cfg.seed)
     work_dir.mkdir(parents=True, exist_ok=True)
 
     # Build env/agent consistently with training

@@ -3,20 +3,28 @@ import argparse
 import sys
 from pathlib import Path
 
-# Make the project source root (src/) importable when running this script directly
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+# Project root (repository top level) and the source root (src/)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from isaaclab.app import AppLauncher
-# local imports
-# add argparse arguments
-parser = argparse.ArgumentParser(description="Train an RL agent with RSL-RL.")
-parser.add_argument("--video", action="store_true", default=False, help="Record videos during training.")
-parser.add_argument("--video_length", type=int, default=750, help="Length of the recorded video (in steps). Default 750 ≈ 15 seconds at 50Hz.")  # <-- 修改默认值
+
+parser = argparse.ArgumentParser(description="Play a trained RSL-RL (PPO) agent.")
+parser.add_argument("--video", action="store_true", default=False, help="Record a video of the rollout.")
+parser.add_argument(
+    "--video_length",
+    type=int,
+    default=750,
+    help="Length of the recorded video in steps (750 ~= 15 s at 50 Hz).",
+)
 parser.add_argument(
     "--disable_fabric", action="store_true", default=False, help="Disable fabric and use USD I/O operations."
 )
 parser.add_argument("--num_envs", type=int, default=1, help="Number of environments to simulate.")
-parser.add_argument("--checkpoint", type=str, default=None, help="checkpoint file")
+parser.add_argument("--checkpoint", type=str, default=None, help="Checkpoint file to load.")
+parser.add_argument(
+    "--log_dir", type=str, default=str(PROJECT_ROOT / "logs"), help="Root directory for logs/videos."
+)
 AppLauncher.add_app_launcher_args(parser)
 # parse the arguments
 args_cli, hydra_args = parser.parse_known_args()
@@ -51,8 +59,8 @@ def main():
     # note: certain randomizations occur in the environment initialization so we set the seed here
     env_cfg.sim.device = env_cfg.sim.device
    
-    log_root = os.path.join("/home/ubuntu22/tdmpc", 'logs', algo_cfg.play_name)  # 设置默认日志根目录
-    log_dir = os.path.join(log_root, datetime.now().strftime('%b%d_%H-%M-%S') + algo_cfg.run_name)  # 附加时间戳和运行名称
+    log_root = os.path.join(args_cli.log_dir, algo_cfg.play_name)
+    log_dir = os.path.join(log_root, datetime.now().strftime("%b%d_%H-%M-%S") + algo_cfg.run_name)
     print(f"[INFO] Loading experiment from directory: {log_root}")
    
    

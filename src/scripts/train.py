@@ -12,8 +12,9 @@ import argparse
 import sys
 from pathlib import Path
 
-# Make the project source root (src/) importable when running this script directly
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+# Project root (repository top level) and the source root (src/)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from isaaclab.app import AppLauncher
 
@@ -25,6 +26,9 @@ parser.add_argument("--num_envs", type=int, default=None, help="Number of enviro
 parser.add_argument("--save_video", action="store_true", help="Save evaluation videos (default: False).")
 parser.add_argument("--save_model", action="store_true", help="Save model checkpoints (default: False).")
 parser.add_argument("--algo", type=str, default="tdmpc", help="Algorithm to train: 'tdmpc' or 'ppo'.")
+parser.add_argument(
+    "--log_dir", type=str, default=str(PROJECT_ROOT / "logs"), help="Root directory for logs/checkpoints."
+)
 
 # AppLauncher injects Kit-related args such as --headless / --renderer
 AppLauncher.add_app_launcher_args(parser)
@@ -90,7 +94,7 @@ def train_tdmpc(env, algo_cfg):
     """Train the TD-MPC agent. Requires a CUDA-enabled device."""
     set_seed(algo_cfg.seed)
     # Output directory for this run
-    work_dir = Path("/home/ubuntu22/tdmpc/logs") / algo_cfg.exp_name / str(algo_cfg.seed)
+    work_dir = Path(algo_cfg.log_dir) / algo_cfg.exp_name / str(algo_cfg.seed)
     algo_cfg.obs_shape = tuple(int(x) for x in algo_cfg.obs_shape)
 
     agent, buffer = TDMPC(algo_cfg), ReplayBuffer(algo_cfg)
@@ -236,7 +240,7 @@ def train_tdmpc(env, algo_cfg):
 
 def train_ppo(env, algo_cfg):
     """Train a PPO agent using rsl_rl's OnPolicyRunner."""
-    log_root = os.path.join("/home/ubuntu22/tdmpc", "logs", algo_cfg.experiment_name)
+    log_root = os.path.join(algo_cfg.log_dir, algo_cfg.experiment_name)
     log_dir = os.path.join(log_root, datetime.now().strftime("%b%d_%H-%M-%S") + "_" + algo_cfg.run_name)
 
     env = RslRlVecEnvWrapper(env, clip_actions=1)
@@ -270,6 +274,9 @@ def main():
         algo_cfg.device = "cuda" if torch.cuda.is_available() else "cpu"
     else:
         algo_cfg = CartspoleCfgPPO()
+
+    # Root directory for logs/checkpoints (used by both training loops)
+    algo_cfg.log_dir = args.log_dir
 
     print(f"[INFO] Exp: {algo_cfg.exp_name}, Seed: {algo_cfg.seed}, Device: {algo_cfg.device}")
     print("torch version:", torch.__version__)

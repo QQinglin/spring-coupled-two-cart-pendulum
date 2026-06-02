@@ -5,12 +5,14 @@ equivalent MuJoCo (MJCF) model of the spring-coupled double-cart pole.
 The observation is assembled to exactly match the training-time definition.
 """
 
+import argparse
 import sys
 import time
 from pathlib import Path
 
-# Make the project source root (src/) importable when running this script directly
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+# Project root (repository top level) and the source root (src/)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 import mujoco
 import mujoco.viewer
@@ -88,9 +90,15 @@ def build_obs(
 
 
 if __name__ == "__main__":
-    # ----- Model and policy paths (edit to your setup) -----
-    XML_PATH = "/home/ubuntu22/tdmpc/src/assets/carts2pole.xml"
-    CKPT_PATH = "/home/ubuntu22/tdmpc/logs/tdmpc_experiment/42/models/2025-10-29_12-44-24.pt"
+    # ----- Model and policy paths -----
+    default_xml = PROJECT_ROOT / "src" / "assets" / "carts2pole.xml"
+    arg_parser = argparse.ArgumentParser(description="Sim-to-sim TD-MPC rollout in MuJoCo")
+    arg_parser.add_argument("--xml", type=str, default=str(default_xml), help="Path to the MJCF model.")
+    arg_parser.add_argument("--checkpoint", type=str, required=True, help="Path to the TD-MPC .pt checkpoint.")
+    cli_args = arg_parser.parse_args()
+
+    XML_PATH = cli_args.xml
+    CKPT_PATH = cli_args.checkpoint
 
     # Joint / actuator names: must match the MJCF
     J_SLIDER_TO_CART1 = "slider_to_cart1"
