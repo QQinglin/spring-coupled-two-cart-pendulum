@@ -1,0 +1,80 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "MuJoCo Debug (deploy_mujoco.py)",
+      "type": "python",
+      "request": "launch",
+      "python": "/home/ubuntu22/miniconda3/envs/env_isaaclab/bin/python",
+      "program": "/home/ubuntu22/tdmpc/src/scripts/deploy_mujoco.py",
+      "console": "integratedTerminal",
+      "cwd": "/home/ubuntu22/tdmpc",
+      "env": {
+        "LD_LIBRARY_PATH": "/home/ubuntu22/mujoco-3.2.2/bin:${env:LD_LIBRARY_PATH}",
+        "MUJOCO_GL": "egl"
+      },
+      "justMyCode": false
+    },
+    {
+      "name": "IsaacLab Debug (train.py - TD-MPC)",
+      "type": "python",
+      "request": "launch",
+      "python": "/home/ubuntu22/miniconda3/envs/env_isaaclab/bin/python",
+      "program": "/home/ubuntu22/tdmpc/src/scripts/train.py",
+      "args": [
+        "--headless",
+        "--save_video",
+        "--save_model",
+        "--enable_cameras",
+        "--algo=tdmpc"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "/home/ubuntu22/IsaacLab",
+      "env": {
+        "PYTHONPATH": "/home/ubuntu22/IsaacLab/source:${env:PYTHONPATH}"
+      },
+      "justMyCode": false
+    },
+    {
+      "name": "IsaacLab Debug (train.py - PPO)",
+      "type": "python",
+      "request": "launch",
+      "python": "/home/ubuntu22/miniconda3/envs/env_isaaclab/bin/python",
+      "program": "/home/ubuntu22/tdmpc/src/scripts/train.py",
+      "args": [
+        "--headless",
+        "--enable_cameras",
+        "--save_model",
+        "--save_video",
+        "--algo=ppo"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "/home/ubuntu22/IsaacLab",
+      "env": {
+        "PYTHONPATH": "/home/ubuntu22/IsaacLab/source:${env:PYTHONPATH}"
+      },
+      "justMyCode": false
+    },
+    {
+      "name": "IsaacLab Debug (play.py)",
+      "type": "python",
+      "request": "launch",
+      "python": "/home/ubuntu22/miniconda3/envs/env_isaaclab/bin/python",
+      "program": "/home/ubuntu22/tdmpc/src/scripts/play.py",
+      "args": [
+        "--num_envs", "1",
+        "--checkpoint", "/home/ubuntu22/tdmpc/logs/ppo_experiment/Nov17_12-12-09_/model_100.pt",
+        "--video",
+        "--video_length", "200",
+        "--enable_cameras",
+        "--headless"
+      ],
+      "console": "integratedTerminal",
+      "cwd": "/home/ubuntu22/IsaacLab",
+      "env": {
+        "PYTHONPATH": "/home/ubuntu22/IsaacLab/source:${env:PYTHONPATH}"
+      },
+      "justMyCode": false
+    }
+  ]
+}

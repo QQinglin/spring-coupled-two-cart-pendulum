@@ -1,0 +1,7 @@
+{
+     "python.pythonPath": "/home/ubuntu22/IsaacLab/_isaac_sim/kit/python/bin/python3",
+    "python.analysis.extraPaths": [
+        "/home/ubuntu22/IsaacLab/_isaac_sim/exts/omni.isaac.ml_archive/pip_prebundle",
+        "/home/ubuntu22/IsaacLab/_isaac_sim/exts"
+    ]
+}

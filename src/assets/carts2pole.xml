@@ -1,0 +1,85 @@
+<mujoco model="cartpole_two_carts">
+  <compiler angle="radian" coordinate="local"/>
+
+  <!-- 基本物理设置 -->
+  <option timestep="0.01" gravity="0 0 -9.81"/>
+
+  <!-- 给关节/执行器预留 user 数据 -->
+  <size nuser_jnt="1" nuser_actuator="1"/>
+
+  <!-- 资源：棋盘格地面材质 -->
+  <asset>
+    <!-- 一个 2D 棋盘格纹理 -->
+    <texture name="tex_checker" type="2d" builtin="checker"
+             width="512" height="512" rgb1="0.8 0.8 0.8" rgb2="0.2 0.2 0.2"/>
+    <!-- 把这个纹理贴到平面上 -->
+    <material name="mat_ground" texture="tex_checker" texrepeat="10 10" reflectance="0.1"/>
+  </asset>
+
+  <default>
+    <geom type="box" rgba="0.8 0.8 0.8 1" contype="1" conaffinity="1"/>
+    <joint limited="true" damping="1e-3"/>
+  </default>
+
+  <worldbody>
+
+    <!-- 一盏光，稍微斜着照下来 -->
+    <light name="top_light" pos="0 0 3" dir="0 0 -1" diffuse="1 1 1" specular="0.3 0.3 0.3"
+           cutoff="45" exponent="3" />
+
+    <!-- 棋盘格地面 -->
+    <geom name="ground" type="plane" pos="0 0 0" size="10 10 0.1" material="mat_ground" />
+
+    <!-- 轨道 -->
+    <geom name="rail" pos="0 0 1.25" size="0.03 8 0.02" type="box" rgba="0.3 0.3 0.3 1" friction="0.1 0.1 0.1"/>
+
+    <!-- cart1：沿 y 滑 -->
+    <body name="cart1" pos="0 0 1.25">
+      <joint name="slider_to_cart1" type="slide" axis="0 1 0"
+             range="-8.0 8.0" damping="0.01"/>
+      <!-- 你定好的尺寸：0.2, 0.25, 0.2 -->
+      <geom name="cart1_geom" size="0.2 0.25 0.2" type="box" rgba="1 0 0 1" mass="1" friction="0.1 0.1 0.1"/>
+
+      <!-- cart：再沿 y 滑，这是“弹簧”那节 -->
+      <!-- 你这里 pos="0 0.4 0" 我照抄；再加关节 qpos=2.4 就会是在这个基础上拉 2.4 -->
+      <body name="cart" pos="0 0 0">
+        <!-- 只能平移不能转 -->
+        <joint name="cart_to_cart1" type="slide" axis="0 1 0"
+               range="-8.0 8.0"
+               stiffness="160"
+               springref="2.4"
+               damping="0.5"/>
+        <!-- 同样的尺寸 -->
+        <geom name="cart2_geom" size="0.2 0.25 0.2" type="box" rgba="0.9 0.4 0.2 1" mass="1" friction="0.1 0.1 0.1"/>
+
+        <!-- 单独开一层给杆转，cart 本身不转 -->
+        <body name="pole_base" pos="0.3 0 0.2">
+          <!-- 杆绕 x 轴 -->
+          <joint name="cart_to_pole" type="hinge"
+                 axis="1 0 0"
+                 range="-3.1416 3.1416"
+                 damping="0.001" />
+
+          <!-- 杆本体 -->
+          <body name="pole" pos="0 0 0">
+            <!-- 你说的 scale: x=0.04, y=0.06, z=1
+                 在 MuJoCo 里 box 的 size 是 半长，所以我照你上一版的写法保留成细长的盒子 -->
+            <geom name="pole_geom"
+                  type="box"
+                  fromto="0 0 0  0 0 1.0"
+                  size="0.04 0.06 1.0"
+                  rgba="0.9 0.9 0.3 1"
+                  mass="1"
+                  friction="0.1 0.1 0.1"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <!-- 给 cart1 的 slider 施力；你原来 gear=400 我也保留 -->
+    <motor name="cart1_actuator" joint="slider_to_cart1"
+           ctrllimited="true" ctrlrange="-1.0 1.0" gear="400"/>
+  </actuator>
+</mujoco>

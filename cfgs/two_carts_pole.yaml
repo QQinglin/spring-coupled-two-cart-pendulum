@@ -1,0 +1,37 @@
+# environment
+_target_: "envs.carts_pole.cartspole_env.Carts2PoleEnvCfg"
+
+
+
+########################################
+env:
+  #_target_: "envs.carts_pole.cartspole_env.Carts2PoleEnvCfg"
+  sim:
+    dt: 0.01
+    decimation: 2
+    episode_length_s: 5
+    fsp: 120
+  scene:
+    num_envs: 4096
+    env_spacing: 4.0
+    replicate_physics: true
+
+  action_scale: 100.0
+  action_space: 1
+  observation_space: 7
+  state_space: 0
+  
+  cart_dof_name: ["slider_to_cart1","cart_to_cart1:1", "cart_to_pole"]
+  #cart_dof_name: ["slider_to_cart1", "slider_to_cart", "cart1_to_pole"] 
+
+  # 重置参数
+  max_cart_pos: 6.0  # 购物车最大位置（超出则重置，单位米）
+  initial_pole_angle_range: [-0.25, 0.25]  # 重置时杆子初始角度范围（弧度，[-0.25π, 0.25π]）
+  #TODO
+
+  # 奖励尺度
+  rew_scale_alive: 1.0  # 存活奖励尺度
+  rew_scale_terminated: -2.0  # 终止惩罚尺度
+  rew_scale_pole_pos: -1.0  # 杆子位置惩罚尺度
+  rew_scale_cart_vel: -0.01  # 购物车速度惩罚尺度
+  rew_scale_pole_vel: -0.005  # 杆子速度惩罚尺度
