@@ -3,7 +3,7 @@
 Official code for the paper
 **"Learning Dynamics for Control: Model-Based Reinforcement Learning of a
 Spring-Coupled Two-Cart Inverted Pendulum"**
-(Qinglin Yang, *Preprints.org*, 2026).
+(Qinglin Yang, Sheng Liu, *Preprints.org*, 2026).
 [![DOI](https://img.shields.io/badge/DOI-10.20944%2Fpreprints202603.1250.v1-blue)](https://doi.org/10.20944/preprints202603.1250.v1)
 
 A reinforcement-learning project for a custom **spring-coupled two-cart inverted
@@ -137,6 +137,18 @@ Training metrics are logged to the console and to [Weights & Biases](https://wan
 Set `use_wandb` / project names in the config classes under `src/configs/`, or
 disable W&B if you do not need it.
 
+## Acknowledgements
+
+This project builds on excellent open-source work:
+
+- [**TD-MPC**](https://github.com/nicklashansen/tdmpc) by Nicklas Hansen et al. —
+  the TD-MPC algorithm and parts of this implementation are adapted from the
+  original repository.
+- [**NVIDIA Isaac Lab**](https://github.com/isaac-sim/IsaacLab) — the simulation
+  framework used to build and train the environment.
+- [**rsl_rl**](https://github.com/leggedrobotics/rsl_rl) — used for the PPO
+  baseline.
+
 ## Citation
 
 If you find this work useful, please cite:
@@ -144,7 +156,7 @@ If you find this work useful, please cite:
 ```bibtex
 @article{yang2026learning,
   title   = {Learning Dynamics for Control: Model-Based Reinforcement Learning of a Spring-Coupled Two-Cart Inverted Pendulum},
-  author  = {Yang, Qinglin},
+  author  = {Yang, Qinglin and Liu, Sheng},
   journal = {Preprints.org},
   year    = {2026},
   doi     = {10.20944/preprints202603.1250.v1}
